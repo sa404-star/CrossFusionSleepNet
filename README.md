@@ -32,7 +32,6 @@ We used three public datasets in this study:
 
 This project currently only provides pre-processing code for SleepEDF-20 and SleepEDF-78, and only provides code for sample-wise k-fold cross-validation. We will update the code in the future.  
 After downloading the datasets, please place them in the folder with the corresponding name in the directory `dataset`.  
-You can run the `dataset_prepare.py` to extract events from the original record (.edf)
 
 ## Reproducibility
 
