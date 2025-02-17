@@ -4,7 +4,8 @@
 ### CrossFusionSleepNet: A Multimodal Deep Learning Model for Automatic Sleep StageClassification
 
 
-![](https://github.com/sa404-star/CrossFusionSleepNet/blob/main/imgs/Graphical%20Abstract1.png)
+
+![image-20250217151652491](./imgs/image-20250217151652491.png)
 
 ## Abstract
 
