@@ -1,9 +1,7 @@
 import os
 import shutil
-
 import mne
 import numpy as np
-
 from args import Path
 
 

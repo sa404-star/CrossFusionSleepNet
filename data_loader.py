@@ -40,7 +40,7 @@ def data_generator_tf(path_labels, path_dataset):
 
     print('val_set:', len(X_val))
     
-    return X_train_test, y_train_test
+    return X_train_test, y_train_test, val_loader
 
 def data_generator_1d(path_labels, path_dataset):
     config = Config()
@@ -73,4 +73,4 @@ def data_generator_1d(path_labels, path_dataset):
     val_loader = DataLoader(dataset=val_set, batch_size=config.batch_size, shuffle=False)
 
     print('val_set:', len(X_val))
-    return X_train_test, y_train_test
+    return X_train_test, y_train_test, val_loader

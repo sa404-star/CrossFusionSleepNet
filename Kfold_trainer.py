@@ -1,21 +1,16 @@
 import os
 import numpy as np
 from tqdm import tqdm
-
 import torch
 from torch import nn
 from torch import optim
 from torch.autograd import Variable
 from torch.utils.data import TensorDataset, DataLoader, StackDataset
-
 from sklearn.model_selection import StratifiedKFold, KFold
 from sklearn.metrics import accuracy_score
-
 from model import CrossFusionSleepNet
 from early_stop_tool import EarlyStopping
-
 from data_loader import data_generator_tf, data_generator_1d
-# from data_loader_shhs import data_generator_tf, data_generator_1d
 from args import Config, Path
 from datetime import datetime
 
@@ -58,16 +53,13 @@ def train(save_all_checkpoint=False):
     config = Config()
     path = Path()
 
-    X_train_test_tf, labels = data_generator_tf(path_labels=path.path_labels, path_dataset=path.path_TF)
-    X_train_test_1d, labels = data_generator_1d(path_labels=path.path_labels, path_dataset=path.path_1D)
+    X_train_test_tf, labels, val_tf_loader = data_generator_tf(path_labels=path.path_labels, path_dataset=path.path_TF)
+    X_train_test_1d, labels, val_1d_loader = data_generator_1d(path_labels=path.path_labels, path_dataset=path.path_1D)
 
-    # X_train_test_tf, labels, val_tf_loader = data_generator_tf(path_labels=path.data_shhs_labels, path_dataset=path.data_shhs_tf)
-    # X_train_test_1d, labels, val_1d_loader = data_generator_1d(path_labels=path.data_shhs_labels, path_dataset=path.data_shhs_1D)
 
     dataset = StackDataset(data_tf=X_train_test_tf, data_1d=X_train_test_1d)
 
     kf = StratifiedKFold(n_splits=config.num_fold, shuffle=True, random_state=42)
-    # kf = KFold(n_splits=config.num_fold, shuffle=True, random_state=0)
 
     for fold, (train_idx, test_idx) in enumerate(kf.split(dataset, labels)):
         print('\n', '-' * 15, '>', f'Fold {fold}', '<', '-' * 15)
@@ -144,18 +136,18 @@ def train(save_all_checkpoint=False):
 
             train_acc = correct / len(train_tf_loader.dataset)
             test_acc, test_loss = test(model, test_tf_loader, test_1d_loader, config)
-            # val_acc, val_loss = test(model, val_tf_loader, val_1d_loader, config)
+            val_acc, val_loss = test(model, val_tf_loader, val_1d_loader, config)
             print('Epoch: ', epoch,
                   '| train loss: %.4f' % running_loss, '| train acc: %.4f' % train_acc,
-                #   '| val acc: %.4f' % val_acc, '| val loss: %.4f' % val_loss,
+                  '| val acc: %.4f' % val_acc, '| val loss: %.4f' % val_loss,
                   '| test acc: %.4f' % test_acc, '| test loss: %.4f' % test_loss)
 
             train_ACC.append(train_acc)
             train_LOSS.append(running_loss)
             test_ACC.append(test_acc)
             test_LOSS.append(test_loss)
-            # val_ACC.append(val_acc)
-            # val_LOSS.append(val_loss)
+            val_ACC.append(val_acc)
+            val_LOSS.append(val_loss)
 
             # Check whether to continue training. If save_all_checkpoint=False, the model name will be ‘model.pkl'
             early_stopping(test_acc, model, path='./Kfold_models/fold{}/model_{}_epoch{}.pkl'.format(fold, fold, epoch))

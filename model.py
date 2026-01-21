@@ -1,15 +1,8 @@
 import math
-from datetime import datetime
-import numpy as np
 import torch
 from torch import nn
 from torch.autograd import Variable
-import torch.fft
-from math import sqrt
-from einops import repeat
-from einops.layers.torch import Rearrange
 import torch.nn.functional as F
-
 
 
 class SELayer(nn.Module):
@@ -213,18 +206,13 @@ class MultiEncoder(nn.Module):
         self.transformer_encoder_multi = nn.TransformerEncoder(encoder_layer_multi, num_layers=config.num_encoder_multi)
 
     def forward(self, x):
-        
-        
         residual = x
-
         x = self.position_multi(x)
         x = self.transformer_encoder_multi(x)
-        
         x = self.layer_norm(x + residual)       # residual connection
 
         return x
     
-
 
 class CrossAttention(nn.Module):
     def __init__(self, in_dim1, in_dim2, k_dim, v_dim, num_heads):

@@ -1,19 +1,12 @@
 import numpy as np
 from tqdm import tqdm
-
 from sklearn.metrics import recall_score, accuracy_score, f1_score, cohen_kappa_score
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import StratifiedKFold, KFold
-
 import torch
 from torch.utils.data import TensorDataset, DataLoader, StackDataset
 from torch.autograd import Variable
-
-# from model_pz import CrossFusionSleepNet
 from model import CrossFusionSleepNet
-
-
-# from data_loader_shhs import data_generator_tf, data_generator_1d
 from data_loader import data_generator_tf, data_generator_1d
 from args import Config, Path
 import os
@@ -72,15 +65,6 @@ def test(model, test_tf_loader, test_1d_loader, fold, config):
             pred.extend(np.argmax(output.data.cpu().numpy(), axis=1))
             label.extend(target.data.cpu().numpy())
 
-
-        # folder_path = './results/Kfold_models/fold{}'.format(fold)
-        # if not os.path.exists(folder_path):
-        #     os.makedirs(folder_path)
-
-        # np.save('./results/Kfold_models/fold{}/pred.npy'.format(fold), np.array(pred))
-        # np.save('./results/Kfold_models/fold{}/label.npy'.format(fold), np.array(label))
-
-
         accuracy = accuracy_score(label, pred, normalize=True, sample_weight=None)
         cohens_kappa = cohen_kappa_score(label, pred)
         macro_f1 = f1_score(label, pred, average='macro')
@@ -91,25 +75,18 @@ def test(model, test_tf_loader, test_1d_loader, fold, config):
               'Sens: %.4f' % average_sensitivity, 'Spec: %.4f' % average_specificity)
 
         con_mat = confusion_matrix(label, pred)
-        # print("con_mat", con_mat)
-        # print("contype", con_mat.dtype)
 
     return accuracy, cohens_kappa, macro_f1, average_sensitivity, average_specificity, con_mat
 
 
 def evaluate(config, path):
 
-
-    # X_train_test_tf, labels, val_tf_loader = data_generator_tf(path_labels=path.path_labels, path_dataset=path.path_TF)
-    # X_train_test_1d, labels, val_1d_loader = data_generator_1d(path_labels=path.path_labels, path_dataset=path.path_1D)
-
-    X_train_test_tf, labels = data_generator_tf(path_labels=path.path_labels, path_dataset=path.path_TF)
-    X_train_test_1d, labels = data_generator_1d(path_labels=path.path_labels, path_dataset=path.path_1D)
+    X_train_test_tf, labels, val_tf_loader = data_generator_tf(path_labels=path.path_labels, path_dataset=path.path_TF)
+    X_train_test_1d, labels, val_1d_loader = data_generator_1d(path_labels=path.path_labels, path_dataset=path.path_1D)
 
     dataset = StackDataset(data_tf=X_train_test_tf, data_1d=X_train_test_1d)
 
     kf = StratifiedKFold(n_splits=config.num_fold, shuffle=True, random_state=0)
-    # kf = KFold(n_splits=config.num_fold, shuffle=True, random_state=0)
 
 
     ACC = 0
@@ -158,7 +135,6 @@ def evaluate(config, path):
 
         Confusion_mat = np.add(Confusion_mat, con_mat)
         
-        # print("Confusion_mat", Confusion_mat.dtype)
 
         del model
 
@@ -186,6 +162,5 @@ if __name__ == '__main__':
     print('Spec: ', Spec)
     print('confusion_mat:')
     print(Confusion_mat)
-    # print(Confusion_mat.sum())
     print('class_wise_result: ')
     print(class_wise_result)

@@ -54,3 +54,4 @@ class EarlyStopping:
             path = os.path.join(os.path.dirname(path), 'model.pkl')
         torch.save(model.state_dict(), path)
         self.val_acc_max = val_acc
+        

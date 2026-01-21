@@ -17,8 +17,8 @@ class Config(object):
         self.forward_hidden = 1024          # hidden units of transformer encoder
         self.fc_hidden = 1024               # hidden units of FC layers
         self.num_head = 8
-        self.num_encoder = 12               # number of encoders in single-channel feature extraction block
-        self.num_encoder_multi = 4          # number of encoders in multi-channel feature fusion block
+        self.num_encoder = 6               # number of encoders in single-channel feature extraction block
+        self.num_encoder_multi = 6          # number of encoders in multi-channel feature fusion block
         
    
         
