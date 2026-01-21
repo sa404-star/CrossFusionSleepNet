@@ -1,7 +1,7 @@
 # CrossFusionSleepNet
 
 
-### CrossFusionSleepNet: A Multimodal Deep Learning Model for Automatic Sleep StageClassification
+### [CrossFusionSleepNet: A Multimodal Deep Learning Model for Automatic Sleep StageClassification](https://www.sciencedirect.com/science/article/pii/S1746809425010493)
 
 by: Yang Cao, Wei Xiang, Jie Wei, ShangShang Cao, Xinhui Tian, Jiajun Zhong, Xiulian Fang, Bin Luo, He Lyu, Xiangkui Li
 
